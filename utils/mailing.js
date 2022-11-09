@@ -10,21 +10,15 @@ let transporter = nodemailer.createTransport({
         user: process.env.GMAIL2, // generated ethereal user
         pass: process.env.PASS2, // generated ethereal password
     },
-    from: process.env.GMAIL2
-});
-transporter.set('proxy_handler_myproxys', (proxy, options, callback) => {
-    console.log('Proxy host=% port=%', proxy.hostname, proxy.port);
-    let socket = require('tls').connect(options.port, options.host, () => {
-        callback(null, {
-            connection: socket,
-            secured: true
-        });
-    });
+    tls: {
+        rejectUnauthorized: false
+    },
+    from: process.env.GMAIL2,
 });
 exports.sendEmail = async (email, subject, textHTML) => {
     try {
         let info = await transporter.sendMail({
-            from: 'Secret Forest Team <admin@secretforest.com>',
+            from: `${process.env.GMAIL2} `,
             to: email, // list of receivers
             subject: subject, // Subject line
             html: textHTML, // html body
